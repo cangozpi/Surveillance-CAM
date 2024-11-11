@@ -12,10 +12,11 @@ class DetectedPersonIdentifier(CVPipelineStep):
         - Concrete Handler of the Chain of Responsibility design pattern pattern (CVPipelineStep).
     """
     def __init__(self):
+        super().__init__()
         self.detectedPersonIdentificationStrategy: DetectedPersonIdentificationStrategy = None # strategy to use for identifying people detected on an image
     
     def setPersonIdentificationStrategy(self, strategy: DetectedPersonIdentificationStrategy):
-        self.detectedPersonIdentificationStrategy = DetectedPersonIdentificationStrategy
+        self.detectedPersonIdentificationStrategy = strategy
     
     def identifyPeople(self, frame):
         return self.detectedPersonIdentificationStrategy.executePersonIdentification(frame)
@@ -23,5 +24,5 @@ class DetectedPersonIdentifier(CVPipelineStep):
     def handle(self, request): # handle fn of the chain of responsibility pattern (CVPipelineStep)
         # TODO:
         # perform person identifivaiton by a KNN approach via self.identifyPeople(frame)
-        # decide to pass down the chain or not via self.next.handle(request)
+        # decide whether to pass down the chain or not
         pass

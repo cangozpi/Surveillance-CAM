@@ -10,8 +10,8 @@ class CVPipelineStep:
     def __init__(self):
         self.next: CVPipelineStep = None
     
-    def setNext(handler: CVPipelineStep):
-        self.next = handler
+    def setNext(handler):
+        self.next = handler # handler: CVPipelineStep
     
     @abstractmethod
     def handle(request):

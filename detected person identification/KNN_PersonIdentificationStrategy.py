@@ -11,8 +11,9 @@ class KNN_DetectedPersonIdentificationStrategy(DetectedPersonIdentificationStrat
         Concrete implementation of the Strategy interface of the Strategy design pattern (DetectedPersonIdentificationStrategy).
     """
     def __init__(self):
+        super().__init__()
         pass
 
-    def executePersonIdentification(frame):
+    def executePersonIdentification(self, frame):
         # TODO: perform object tracking using SORT
         pass
