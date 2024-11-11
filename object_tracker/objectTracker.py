@@ -90,10 +90,10 @@ class ObjectTracker(CVPipelineStep):
         assert(isinstance(tracker_ids, np.ndarray) and (len(scores.shape) == 1) and (scores.shape == (boxes.shape[0],)))
         print(f'[ObjectTracker] num_tracked_objects: {boxes.shape[0]}')
 
-        from videoStream import VideoStream
-        from copy import deepcopy
-        annotated_frame = self.getAnnotatedFrame(boxes, labels, scores, deepcopy(request['frame']), tracker_ids, threshold=0.0)
-        VideoStream.displayFrame(annotated_frame)
+        # from videoStream import VideoStream
+        # from copy import deepcopy
+        # annotated_frame = self.getAnnotatedFrame(boxes, labels, scores, deepcopy(request['frame']), tracker_ids, threshold=0.0)
+        # VideoStream.displayFrame(annotated_frame)
 
         # decide whether to pass down the chain or not
         if self.next is not None:
