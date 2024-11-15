@@ -1,6 +1,7 @@
 from time import sleep
 from videoStream import VideoStream
 from CV_pipeline.CVPipelineStep import CVPipelineStep
+from CV_pipeline.CVPipeline import CVPipeline
 from change_detection.changeDetector import ChangeDetector
 from change_detection.changeDetectionStrategy import ChangeDetectionStrategy
 from change_detection.pixelDifferenceChangeDetectionStrategy import PixelDifferenceChangeDetectionStrategy
@@ -20,16 +21,14 @@ from detected_person_identification.knownPersonDb import KnownPersonDb
 from detected_person_identification.knownPersonDb import KnownPersonFolderDb
 
 #-----  Manually create the CV Pipeline:
-cv_PipelineHead: CVPipelineStep = None
-cv_PipelineTail: CVPipelineStep = None
+cv_Pipeline: CVPipeline = CVPipeline()
 
 # Create a Change Detector, set its Strategy:
 changeDetector: ChangeDetector = ChangeDetector()
 pixelDifferenceChangeDetectionStrategy: ChangeDetectionStrategy = PixelDifferenceChangeDetectionStrategy()
 changeDetector.setChangeDetectionStrategy(pixelDifferenceChangeDetectionStrategy)
 
-cv_PipelineHead = changeDetector # set the head of the CV Pipeline
-cv_PipelineTail = changeDetector
+cv_Pipeline.appendPipelineStep(changeDetector)
 
 
 # Create a Object Detector, set its Strategy, and add it to the CV Pipeline:
@@ -37,8 +36,7 @@ objectDetector: ObjectDetector = ObjectDetector()
 mobileNetObjectDetectionStrategy: ObjectDetectionStrategy = MobileNetObjectDetectionStrategy()
 objectDetector.setObjectDetectionStrategy(mobileNetObjectDetectionStrategy)
 
-cv_PipelineTail.next = objectDetector
-cv_PipelineTail = objectDetector
+cv_Pipeline.appendPipelineStep(objectDetector)
 
 
 # Create a Bounding Box Filter, set its Strategy, and add it to the CV Pipeline:
@@ -46,8 +44,7 @@ boundingBoxFilter: BoundingBoxFilter = BoundingBoxFilter(conf_threshold=0.2, iou
 nonMaxSuppressionBoundingBoxFilteringStrategy: BoundingBoxFilteringStrategy = NonMaxSuppressionBoundingBoxFilteringStrategy()
 boundingBoxFilter.setBoundingBoxFilteringStrategy(nonMaxSuppressionBoundingBoxFilteringStrategy)
 
-cv_PipelineTail.next = boundingBoxFilter
-cv_PipelineTail = boundingBoxFilter
+cv_Pipeline.appendPipelineStep(boundingBoxFilter)
 
 
 # Create a Object Tracker, set its Strategy, and add it to the CV Pipeline:
@@ -55,8 +52,7 @@ objectTracker: ObjectTracker = ObjectTracker()
 sort_ObjectTrackingStrategy: ObjectTrackingStrategy = SORT_ObjectTrackingStrategy(max_age=1, min_hits=5, iou_threshold=0.3)
 objectTracker.setObjectTrackingStrategy(sort_ObjectTrackingStrategy)
 
-cv_PipelineTail.next = objectTracker
-cv_PipelineTail = objectTracker
+cv_Pipeline.appendPipelineStep(objectTracker)
 
 
 # Create a Detected Person Identifier, set its Strategy and the db it uses, and add it to the CV Pipeline:
@@ -65,8 +61,7 @@ detectedPersonIdentifier: DetectedPersonIdentifier = DetectedPersonIdentifier(db
 knn_DetectedPersonIdentificationStrategy: DetectedPersonIdentificationStrategy = KNN_DetectedPersonIdentificationStrategy(threshold_norm_dist=100) #TODO: tune this threshold value dynamically
 detectedPersonIdentifier.setPersonIdentificationStrategy(knn_DetectedPersonIdentificationStrategy)
 
-cv_PipelineTail.next = detectedPersonIdentifier
-cv_PipelineTail = detectedPersonIdentifier
+cv_Pipeline.appendPipelineStep(detectedPersonIdentifier)
 
 
 
@@ -83,10 +78,9 @@ while True:
         sleep(fps)
 
         # pass the frame through the CV Pipeline
-        if cv_PipelineHead is not None:
-            cv_PipelineHead.handle({
-                'frame': frame
-            })
+        cv_Pipeline.handle_CVPipeline(initial_request={
+            'frame': frame
+        })
     else:
         exit()
 

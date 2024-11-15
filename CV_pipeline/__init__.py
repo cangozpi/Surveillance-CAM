@@ -1,1 +1,2 @@
 from CV_pipeline.CVPipelineStep import CVPipelineStep
+from CV_pipeline.CVPipeline import CVPipeline
