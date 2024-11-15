@@ -19,6 +19,15 @@ from detected_person_identification.detectedPersonIdentificationStrategy import 
 from detected_person_identification.KNN_PersonIdentificationStrategy import KNN_DetectedPersonIdentificationStrategy
 from detected_person_identification.knownPersonDb import KnownPersonDb
 from detected_person_identification.knownPersonDb import KnownPersonFolderDb
+from notification.notifier import Notifier
+from notification.notificationStrategy import NotificationStrategy
+from notification.emailNotificationStrategy import EmailNotificationStrategy
+
+
+# ----- Simulate video stream:
+video_path = './test/test video.mp4'
+videoStream = VideoStream(video_path)
+fps = 1/30
 
 #-----  Manually create the CV Pipeline:
 cv_Pipeline: CVPipeline = CVPipeline()
@@ -64,11 +73,16 @@ detectedPersonIdentifier.setPersonIdentificationStrategy(knn_DetectedPersonIdent
 cv_Pipeline.appendPipelineStep(detectedPersonIdentifier)
 
 
+# Create a Detected Person Identifier, set its Strategy and the db it uses, and add it to the CV Pipeline:
+notifier: Notifier = Notifier(notifierHistory_windowSize=int(2*(1/fps)), forgetting_threshold=1.0) #TODO: tune these parameters
+emailNotificationStrategy: NotificationStrategy = EmailNotificationStrategy()
+notifier.setNotificationStrategy(emailNotificationStrategy)
 
-# ----- Simulate video stream and the CV Pipeline:
-video_path = './test/test video.mp4'
-videoStream = VideoStream(video_path)
-fps = 1/30
+cv_Pipeline.appendPipelineStep(notifier)
+
+
+
+# ----- 
 
 while True:
     frame = videoStream.getNextFrame()

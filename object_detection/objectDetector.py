@@ -28,7 +28,7 @@ class ObjectDetector(CVPipelineStep):
         Inputs:
             frame (np.ndarray of shape [H, W, C=3]): input image 2D BGR image of shape [H,W,C=3]
         Returns:
-            boxes (np.ndarray of shape [N, x1, y1, x2, y2]): returns the bounding box coordinates for the given detections, where (x1, y1)  
+            boxes (np.ndarray of shape [N, 4=[x1, y1, x2, y2]]): returns the bounding box coordinates for the given detections, where (x1, y1)  
                 corresponds to the top left corner of the bounding box, and (x2, y2) corresponds to the bottom right corner of the bounding box.
             labels (list of strings): contains labels (categories) for the detected objects as strings (not class id's). Each label's corresponding
                 bounding box is in the boxes array's same index.
@@ -48,7 +48,7 @@ class ObjectDetector(CVPipelineStep):
         
         - Calls self.next.handle() with the following params:
             {
-                'boxes' (np.ndarray of shape [N, x1, y1, x2, y2]): returns the bounding box coordinates for the given detections, where (x1, y1)  
+                'boxes' (np.ndarray of shape [N, 4=[x1, y1, x2, y2]]): returns the bounding box coordinates for the given detections, where (x1, y1)  
                     corresponds to the top left corner of the bounding box, and (x2, y2) corresponds to the bottom right corner of the bounding box.
                 'labels' (list of strings): contains labels (categories) for the detected objects as strings (not class id's). Each label's corresponding
                     bounding box is in the boxes array's same index.

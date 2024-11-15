@@ -51,7 +51,7 @@ class DetectedPersonIdentifier(CVPipelineStep):
         """
         Inputs:
             {
-                'boxes' (np.ndarray of shape [N, x1, y1, x2, y2]): returns the bounding box coordinates for the given detections, where (x1, y1)  
+                'boxes' (np.ndarray of shape [N, 4=[x1, y1, x2, y2]]): returns the bounding box coordinates for the given detections, where (x1, y1)  
                     corresponds to the top left corner of the bounding box, and (x2, y2) corresponds to the bottom right corner of the bounding box.
                 'labels' (list of strings): contains labels (categories) for the detected objects as strings (not class id's). Each label's corresponding
                     bounding box is in the boxes array's same index.
@@ -62,7 +62,7 @@ class DetectedPersonIdentifier(CVPipelineStep):
 
         - Calls self.next.handle() with the following params:
             {
-                'boxes' (np.ndarray of shape [N, x1, y1, x2, y2]): returns the bounding box coordinates for the given detections, where (x1, y1)  
+                'boxes' (np.ndarray of shape [N, 4=[x1, y1, x2, y2]]): returns the bounding box coordinates for the given detections, where (x1, y1)  
                     corresponds to the top left corner of the bounding box, and (x2, y2) corresponds to the bottom right corner of the bounding box.
                 'labels' (list of strings): contains labels (categories) for the detected objects as strings (not class id's). Each label's corresponding
                     bounding box is in the boxes array's same index.
@@ -89,7 +89,7 @@ class DetectedPersonIdentifier(CVPipelineStep):
         assert(isinstance(boxes, np.ndarray) and (len(boxes.shape) == 2) and (boxes.shape[1] == 4))
         assert(isinstance(labels, list) and (len(labels) == boxes.shape[0]))
         assert(isinstance(scores, np.ndarray) and (len(scores.shape) == 1) and (scores.shape == (boxes.shape[0],)))
-        assert(isinstance(tracker_ids, np.ndarray) and (len(scores.shape) == 1) and (scores.shape == (boxes.shape[0],)))
+        assert(isinstance(tracker_ids, np.ndarray) and (len(tracker_ids.shape) == 1) and (tracker_ids.shape == (boxes.shape[0],)))
         assert(isinstance(frame, np.ndarray) and (len(frame.shape) == 3) and (frame.shape[2] == 3))
 
         # extract detected people from the given frame
@@ -107,13 +107,14 @@ class DetectedPersonIdentifier(CVPipelineStep):
         for i in range(len(cropped_person_images)):
             cur_matched_person_name = cropped_person_names[i]
             identified_person_names[detected_people_indices[i]] = cur_matched_person_name
-        assert(len(identified_person_names) == boxes.shape[0])
+        assert(isinstance(identified_person_names, list) and len(identified_person_names) == boxes.shape[0])
         print(f'[DetectedPersonIdentifier] identified_people: {list(filter(lambda x: x is not None, identified_person_names))}')
 
         from videoStream import VideoStream
         annotated_frame = self.getAnnotatedFrame(boxes, labels, scores, frame, tracker_ids, identified_person_names, threshold=0.1)
         VideoStream.displayFrame(annotated_frame)
 
+        # decide whether to pass down the chain or not
         if self.next is not None:
             self.next.handle({
                 'boxes': request['boxes'], # detected bounding boxes after filtering
@@ -130,7 +131,7 @@ class DetectedPersonIdentifier(CVPipelineStep):
         indices in the boxes np array. People are cut from the given frame by their corresponding bounding boxes.
 
         Inputs:
-                'boxes' (np.ndarray of shape [N, x1, y1, x2, y2]): returns the bounding box coordinates for the given detections, where (x1, y1)  
+                'boxes' (np.ndarray of shape [N, 4=[x1, y1, x2, y2]]): returns the bounding box coordinates for the given detections, where (x1, y1)  
                     corresponds to the top left corner of the bounding box, and (x2, y2) corresponds to the bottom right corner of the bounding box.
                 'labels' (list of strings): contains labels (categories) for the detected objects as strings (not class id's). Each label's corresponding
                     bounding box is in the boxes array's same index.

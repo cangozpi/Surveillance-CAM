@@ -59,13 +59,14 @@ class MobileNetObjectDetectionStrategy(ObjectDetectionStrategy):
         Performs object detection on the passed frame and returns the detections.
 
         Inputs:
-            frame (np.array): 2D image as BGR numpy array of shape [H, W, C].
+            frame (np.ndarray of shape [H, W, C=3]): input image 2D BGR image of shape [H,W,C=3]
         Returns:
-            tuple(boxes, labels, scores) 
-            ---
-            boxes (np.array): detected bounding boxes in the format of [x1, y1, x2, y2].
-            labels (array of strings): array of class labels as strings (not object ids).
-            scores (np.array): confidence scores of the bounding boxes.
+            boxes (np.ndarray of shape [N, 4=[x1, y1, x2, y2]]): returns the bounding box coordinates for the given detections, where (x1, y1)  
+                corresponds to the top left corner of the bounding box, and (x2, y2) corresponds to the bottom right corner of the bounding box.
+            labels (list of strings): contains labels (categories) for the detected objects as strings (not class id's). Each label's corresponding
+                bounding box is in the boxes array's same index.
+            scores (np.ndarray of shape [N,]): contains the confidence scores for the detections. Each index in the array has the confidence
+                score of the detected object at the same index in the boxes and labels arrays.
         """
         # Preprocess the input image
         image_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)  # Convert to RGB for processing with the model [H, W, C]

@@ -20,6 +20,9 @@ class PixelDifferenceChangeDetectionStrategy(ChangeDetectionStrategy):
         Compare each frame to the previous one by calculating the difference between them. 
         If the difference is above a certain threshold, then a change is detected.
 
+        Inputs:
+            frame (np.ndarray of shape [H, W, C=3]): input image 2D BGR image of shape [H,W,C=3].
+
         Return:
             True: if change detected.
             False: if no change detected.
