@@ -11,6 +11,7 @@ import os
 from io import BytesIO
 from time import gmtime, strftime
 import os
+from threading import Thread
 
 class EmailNotificationStrategy(NotificationStrategy):
     """
@@ -30,6 +31,7 @@ class EmailNotificationStrategy(NotificationStrategy):
         # Setup the SMTP server
         self.smtp_server = "smtp.gmail.com"  # For Gmail, use Gmail's SMTP server
         self.smtp_port = 587  # For TLS (587), 465 for SSL
+        self.shouldSendMailAsync = True # if True mail is send in a separate thread, if False mail is sent by blocking the main thread
 
     def executeNotify(self, msg: str, frame):
         """
@@ -65,22 +67,32 @@ class EmailNotificationStrategy(NotificationStrategy):
         # Attach the image to the email message
         message.attach(image_part)
 
-        try:
-            # Create a secure connection with the SMTP server
-            server = smtplib.SMTP(self.smtp_server, self.smtp_port)
-            server.starttls()  # Start TLS (transport layer security)
+        # fn to send mail in a separate thread
+        def sendMailAsyn(smtp_server, smtp_port, sender_email, password, receiver_email, text):
+            try:
+                # Create a secure connection with the SMTP server
+                server = smtplib.SMTP(smtp_server, smtp_port)
+                server.starttls()  # Start TLS (transport layer security)
     
-            # Login to the SMTP server
-            server.login(self.sender_email, self.password)
+                # Login to the SMTP server
+                server.login(sender_email, password)
     
-            # Send the email
-            text = message.as_string()
-            server.sendmail(self.sender_email, self.receiver_email, text) #TODO: send email async or in a new thread
-            print("Email sent successfully!")
-        except Exception as e:
-            print(f"Failed to send email: {e}")
-        finally:
-            server.quit()  # Close the connection
+                # Send the email
+
+
+                server.sendmail(sender_email, receiver_email, text)
+                print("Email sent successfully!")
+            except Exception as e:
+                print(f"Failed to send email: {e}")
+            finally:
+                server.quit()  # Close the connection
+
+        text = message.as_string()
+        if self.shouldSendMailAsync == True: # Send mail in a separate thread (non-blocking)
+            email_thread = Thread(target=sendMailAsyn, args=(self.smtp_server, self.smtp_port, self.sender_email, self.password, self.receiver_email, text))
+            email_thread.start()
+        else: # Send mail in the main thread (blocking)
+            sendMailAsyn(self.smtp_server, self.smtp_port, self.sender_email, self.password, self.receiver_email, text)
 
     def convert_bgr_to_image_bytes(self, bgr_image, image_format="JPEG"):
         """
