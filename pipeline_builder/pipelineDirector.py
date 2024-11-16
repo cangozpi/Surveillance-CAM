@@ -52,7 +52,10 @@ class PipelineDirector:
         self.pipelineBuilder.setBoundingBoxFilter(Available_BoundingBoxFilteringStrategies.NON_MAX_SUPPRESSION_BOUNDING_BOX_FILTERING_STRATEGY, conf_threshold=kwargs['conf_threshold'], iou_threshold=kwargs['iou_threshold']) 
 
         # 4. Set the ObjectTracker
-        self.pipelineBuilder.setObjectTracker(Available_ObjectTrackingStrategies.SORT_OBJECT_TRACKING_STRATEGY)
+        self.pipelineBuilder.setObjectTracker(Available_ObjectTrackingStrategies.SORT_OBJECT_TRACKING_STRATEGY, 
+            max_age=kwargs['max_age'],
+            min_hits=kwargs['min_hits'], 
+            iou_threshold=kwargs['iou_threshold'])
 
         # 5. Set the DetectedPersonIdentifier
         self.pipelineBuilder.setDetectedPersonIdentifier(Available_DetectedPersonIdentificationStrategies.KNN_PERSON_IDENTIFICATION_STRATEGY, threshold_norm_dist=kwargs['threshold_norm_dist']) 

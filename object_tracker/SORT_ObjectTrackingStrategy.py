@@ -272,7 +272,7 @@ class SORT(object):
         """
         Sets key parameters for SORT
         """
-        self.max_age = max_age
+        self.max_age = max_age #TODO: set these dynamically
         self.min_hits = min_hits
         self.iou_threshold = iou_threshold
         self.trackers = []

@@ -167,7 +167,7 @@ class PipelineBuilder(IPipelineBuilder):
 
         if strategy_type == Available_ObjectTrackingStrategies.SORT_OBJECT_TRACKING_STRATEGY:
             # Create the Strategy to set
-            sort_ObjectTrackingStrategy: ObjectTrackingStrategy = SORT_ObjectTrackingStrategy(max_age=1, min_hits=5, iou_threshold=0.3)
+            sort_ObjectTrackingStrategy: ObjectTrackingStrategy = SORT_ObjectTrackingStrategy(**kwargs)
 
             # Check if ObjectTracker step has been set already
             step_ref: ObjectTracker = self.cv_Pipeline.getCVPipelineStepIfExists(ObjectTracker)

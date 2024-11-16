@@ -5,6 +5,7 @@ from bounding_box_filtering.available_bounding_box_filtering_strategies import A
 from object_tracker.available_object_tracking_strategies import Available_ObjectTrackingStrategies
 from detected_person_identification.available_detected_person_identification_strategies import Available_DetectedPersonIdentificationStrategies
 from notification.available_notification_strategies import Available_NotificationStrategies
+from CV_pipeline.CVPipeline import CVPipeline
 
 class IPipelineBuilder(ABC):
     """
@@ -16,7 +17,7 @@ class IPipelineBuilder(ABC):
         - Builder interface of the Builder design pattern.
     """
     def __init__(self):
-        self.cv_Pipeline = None
+        self.cv_Pipeline:CVPipeline = None
     
     @abstractmethod
     def reset(self):

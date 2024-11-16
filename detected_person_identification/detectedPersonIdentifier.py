@@ -4,6 +4,7 @@ import numpy as np
 from copy import deepcopy
 import cv2
 from detected_person_identification.knownPersonDb import KnownPersonDb
+from detected_person_identification.knownPersonDb import KnownPersonDb
 
 class DetectedPersonIdentifier(CVPipelineStep):
     """
@@ -19,7 +20,8 @@ class DetectedPersonIdentifier(CVPipelineStep):
         super().__init__()
         self.detectedPersonIdentificationStrategy: DetectedPersonIdentificationStrategy = None # strategy to use for identifying people detected on an image
 
-        self.db = db # database of known people
+        assert(isinstance(db, KnownPersonDb))
+        self.db:KnownPersonDb = db # database of known people
         self.db_dict =  self.db.get_db_dict() # db_dict (dict | keys: string | values: array of np arrays): persons name as the key, 
             # and the array of feature vectors (np arrays)extracted from the images that person had in the database.
         assert (isinstance(self.db_dict, dict))
