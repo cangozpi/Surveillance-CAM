@@ -12,8 +12,9 @@ class PixelDifferenceChangeDetectionStrategy(ChangeDetectionStrategy):
     """
     def __init__(self):
         super().__init__()
-        self.threshold = 500 #TODO: determine this automatically/dynamically using past frame statistics
         self.previous_frame = None
+        self.percentage_of_the_frame_as_count_threshold = 0.0005 # threshold will be set to the (0.05) percent of the total frame size.
+        self.diff_threshold = 30 # used to threshold the pixel difference between the two consecutive frames.
 
     def executeChangeDetection(self, frame):
         """
@@ -41,7 +42,7 @@ class PixelDifferenceChangeDetectionStrategy(ChangeDetectionStrategy):
         diff = cv2.absdiff(self.previous_frame, current_gray)
 
         # Apply a threshold to the difference
-        _, thresh = cv2.threshold(diff, 30, 255, cv2.THRESH_BINARY)
+        _, thresh = cv2.threshold(diff, self.diff_threshold, 255, cv2.THRESH_BINARY)
 
         # Count the non-zero pixels in the thresholded difference image
         change_count = np.count_nonzero(thresh)
@@ -49,8 +50,10 @@ class PixelDifferenceChangeDetectionStrategy(ChangeDetectionStrategy):
         # Update previous frame
         self.previous_frame = current_gray
 
+        threshold = np.multiply(*diff.shape) * self.percentage_of_the_frame_as_count_threshold 
+
         # Set a threshold for the number of changed pixels to trigger detection
-        if change_count > self.threshold:  # Adjust this threshold as needed
+        if change_count > threshold:  # Adjust this threshold as needed
             return True
         else:
             return False
