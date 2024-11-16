@@ -1,3 +1,4 @@
 from object_detection.objectDetector import ObjectDetector
 from object_detection.objectDetectionStrategy import ObjectDetectionStrategy
 from object_detection.mobileNetObjectDetectionStrategy import MobileNetObjectDetectionStrategy
+from object_detection.available_object_detection_strategies import Available_ObjectDetectionStrategies

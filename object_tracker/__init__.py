@@ -1,3 +1,4 @@
 from object_tracker.objectTracker import ObjectTracker
 from object_tracker.objectTrackingStrategy import ObjectTrackingStrategy
 from object_tracker.SORT_ObjectTrackingStrategy import SORT_ObjectTrackingStrategy
+from object_tracker.available_object_tracking_strategies import Available_ObjectTrackingStrategies

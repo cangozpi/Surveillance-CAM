@@ -23,7 +23,7 @@ class EmailNotificationStrategy(NotificationStrategy):
     def __init__(self):
         super().__init__()
         # Email details
-        self.sender_email = os.getenv('EMAIL') #TODO: set this dynamically
+        self.sender_email = os.getenv('EMAIL')
         self.receiver_email = os.getenv('EMAIL')
         self.password = os.getenv('EMAIL_PASSWORD')  # Or app-specific password (if using Gmail, for example)
 

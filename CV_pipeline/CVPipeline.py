@@ -56,7 +56,28 @@ class CVPipeline:
         """
         self.cv_PipelineHead: CVPipelineStep = None # points to the head of the CV_Pipeline
         self.cv_PipelineTail: CVPipelineStep = None # points to the tail (end) of the CV_Pipeline
+
+    def getCVPipelineStepIfExists(self, step: CVPipelineStep):
+        """
+        Returns None if the CV Pipeline does not have the given step set, else it returns the corresponding 
+        step from the Pipeline (reference to it).
+
+        Inputs:
+            step (CVPipelineStep): type of the CVPipelineStep to search for in the CV Pipeline.
         
+        Returns:
+            step_ref (CVPipelineStep or None): None if the step is not in CV Pipeline, else a reference to that step in the CV Pipeline.
+        """
+        if isinstance(self.cv_PipelineHead, step) or (self.cv_PipelineHead is None):
+            return self.cv_PipelineHead
+        else:
+            cur_next = self.cv_PipelineHead.next
+            while cur_next is not None:
+                if isinstance(cur_next, step):
+                    return cur_next
+                cur_next = cur_next.next
+        
+        return None
 
 
         

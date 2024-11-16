@@ -11,3 +11,5 @@ detected_person_identification/known_people_db/Kevin/*
 
 *Profiling*.json
 *.html
+
+Makefile

@@ -15,7 +15,7 @@ class VideoStream:
             self.close()
 
 
-    def getNextFrame(self):
+    def getNextFrame(self): # TODO: add the option to run this on a separate thread
         ret, frame = self.cap.read()
 
         # If frame is read correctly, ret will be True

@@ -57,6 +57,8 @@ class DetectedPersonIdentifier(CVPipelineStep):
                     bounding box is in the boxes array's same index.
                 'scores' (np.ndarray of shape [N,]): contains the confidence scores for the detections. Each index in the array has the confidence
                     score of the detected object at the same index in the boxes and labels arrays.
+                'tracker_ids' (np.ndarray of shape [N,]): unique id's assigned by the object trackers. Note that id's are assigned starting from 0 again after no object
+                    tracker remains due to all trackers being deleted due to various reasons such as inacitivity.
                 'frame' (np.ndarray of shape [H, W, C=3]): input image 2D BGR image of shape [H,W,C=3]
             }
 
