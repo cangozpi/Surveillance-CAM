@@ -1,3 +1,4 @@
+import argparse
 from time import sleep
 from videoStream import VideoStream
 from CV_pipeline.CVPipelineStep import CVPipelineStep
@@ -6,12 +7,26 @@ from pipeline_builder.pipelineBuilder import PipelineBuilder
 from pipeline_builder.pipelineDirector import PipelineDirector
 
 if __name__ == '__main__':
+    # Get the video_path from the user as a command line argument:
+    parser = argparse.ArgumentParser(description="Smart Surveillance System")
+    parser.add_argument(
+        '--video_path', 
+        type=str,
+        required=True,  # Make sure it's a required argument
+        help="Path to the video source file or RTSP video stream URL. It cannot be empty."
+    )
+    args = parser.parse_args()
+    
 
     # ----- Simulate video stream:
-    video_path = './test/test video.mp4'
-    read_video_stream_non_blocking = False
+    video_path: str = args.video_path
+    # If the video_path is a RTSP video stream URL then process it in real time by always processing the newest frame available.
+    # If video_path is a video file than process it frame by frame. 
+    if video_path.lower().startswith(('rtsp://', 'rtsps://')):
+        read_video_stream_non_blocking = True
+    else: 
+        read_video_stream_non_blocking = False
     videoStream = VideoStream(video_path, non_blocking=read_video_stream_non_blocking)
-    fps = 1/30
 
 
     # -----------------
@@ -31,8 +46,8 @@ if __name__ == '__main__':
         # param for KNN_PersonIdentificationStrategy:
         'threshold_norm_dist': 100, #TODO: tune this threshold value dynamically
 
-        'notifierHistory_windowSize': int(2*(1/fps)), # param for Notifier
-        'forgetting_threshold': 1.0 # param for EmailNotificationStrategy #TODO: tune these parameters
+        'notifierHistory_windowSize': int(2*(1/30)), # param for Notifier #TODO: tune these parameters
+        'forgetting_threshold': 1.0 # param for EmailNotificationStrategy
     })
 
     # Start processing the stream using the CV Pipeline:

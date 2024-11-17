@@ -1,7 +1,6 @@
 __pycache__
 
 test/
-README.md
 
 detected_person_identification/known_people_db/*
 detected_person_identification/known_people_db/Mike/*
